@@ -1,0 +1,697 @@
+/* =========================================================================================
+   APLIKASI TABUNGAN DIGITAL PKK (TabunganPKK)
+   File: assets/css/style.css
+   -----------------------------------------------------------------------------------------
+   PENJELASAN UNTUK PRESENTASI GURU:
+   1. Konsep Desain:
+      Stylesheet ini menggunakan prinsip 'Modern Contrast Design' dengan nuansa warna hijau
+      resmi PKK yang berbobot (Dark Forest & Deep Emerald). Kontras dipertegas agar teks,
+      angka saldo, dan kartu statistik sangat mudah dibaca di berbagai resolusi layar.
+
+   2. Variabel CSS (:root):
+      Menyimpan kode warna sentral dalam satu tempat. Mempermudah pemeliharaan (maintenance)
+      sehingga jika ingin mengubah tema, cukup mengganti nilai di blok ':root'.
+
+   3. Arsitektur Responsif:
+      Menggunakan sistem tata letak Flexbox dan CSS Grid serta Media Queries (@media) agar
+      aplikasi dapat menyesuaikan ukuran layar komputer desktop, laptop, tablet, hingga HP.
+   ========================================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* -------------------------------------------------------------------------
+   1. DEFINISI VARIABEL WARNA & UKURAN GLOBAL (THEME PALETTE)
+   Menggunakan hijau gelap (Deep Forest Green) untuk kontras tinggi dan formal.
+   ------------------------------------------------------------------------- */
+:root {
+    --pkk-primary: #0f5132;        /* Hijau gelap utama (Forest Green) */
+    --pkk-primary-dark: #072e18;   /* Hijau sangat gelap untuk hover & header */
+    --pkk-primary-light: #157347;  /* Hijau emerald untuk aksen */
+    --pkk-primary-subtle: #d1e7dd; /* Hijau muda lembut untuk latar menu aktif */
+    --pkk-accent: #0a5c36;         /* Aksen pendukung */
+    
+    --pkk-bg: #f1f5f9;             /* Latar belakang halaman yang kontras dengan kartu putih */
+    --pkk-card-bg: #ffffff;        /* Warna dasar kartu komponen */
+    --pkk-text-main: #0a0f1d;       /* Warna teks utama hitam pekat */
+    --pkk-text-muted: #475569;      /* Warna teks sekunder abu-abu gelap terstruktur */
+    --pkk-border: #cbd5e1;          /* Garis batas tegas (border) antar elemen */
+    
+    --pkk-sidebar-width: 260px;     /* Lebar default bilah samping (sidebar) */
+    --pkk-radius: 12px;             /* Sudut lengkung modern komponen */
+    
+    /* Bayangan komponen (Box Shadows) bertingkat */
+    --pkk-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+    --pkk-shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.10), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    --pkk-shadow-lg: 0 12px 24px -4px rgba(7, 46, 24, 0.18), 0 4px 6px -4px rgba(0, 0, 0, 0.06);
+}
+
+/* Reset Box Sizing Universal */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--pkk-bg);
+    color: var(--pkk-text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Kustomisasi Scrollbar Browser agar Lebih Ramping */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-track {
+    background: #e2e8f0;
+}
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* -------------------------------------------------------------------------
+   2. TATA LETAK APLIKASI (SIDEBAR & WRAPPER)
+   ------------------------------------------------------------------------- */
+.app-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Sidebar Navigasi Kiri */
+.app-sidebar {
+    width: var(--pkk-sidebar-width);
+    background: #ffffff;
+    border-right: 1.5px solid var(--pkk-border);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Logo & Identitas pada Sidebar */
+.sidebar-brand {
+    padding: 1.35rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    border-bottom: 1.5px solid var(--pkk-border);
+    text-decoration: none;
+}
+
+.sidebar-brand .brand-logo {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--pkk-primary-dark), var(--pkk-primary-light));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.35rem;
+    box-shadow: 0 4px 12px rgba(7, 46, 24, 0.3);
+}
+
+.sidebar-brand .brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-brand .brand-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--pkk-primary-dark);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.sidebar-brand .brand-subtitle {
+    font-size: 0.72rem;
+    color: var(--pkk-text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Daftar Menu Sidebar */
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem 0.85rem;
+}
+
+.menu-category {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+    color: #64748b;
+    padding: 0.6rem 0.85rem 0.3rem;
+    margin-top: 0.85rem;
+}
+
+.sidebar-menu .nav-item {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-menu .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.75rem 1rem;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.93rem;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.sidebar-menu .nav-link i {
+    font-size: 1.15rem;
+    width: 24px;
+    text-align: center;
+    color: #64748b;
+    transition: color 0.2s ease;
+}
+
+.sidebar-menu .nav-link:hover {
+    background-color: #e2e8f0;
+    color: var(--pkk-primary-dark);
+}
+
+.sidebar-menu .nav-link:hover i {
+    color: var(--pkk-primary-dark);
+}
+
+/* Status Menu Sedang Aktif */
+.sidebar-menu .nav-link.active {
+    background-color: var(--pkk-primary-subtle);
+    color: var(--pkk-primary-dark);
+    font-weight: 800;
+    border-left: 4px solid var(--pkk-primary-dark);
+}
+
+.sidebar-menu .nav-link.active i {
+    color: var(--pkk-primary-dark);
+}
+
+/* Bagian Bawah Sidebar (User Info) */
+.sidebar-footer {
+    padding: 1.1rem 1.25rem;
+    border-top: 1.5px solid var(--pkk-border);
+    background: #f8fafc;
+}
+
+.user-badge-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--pkk-primary-subtle);
+    color: var(--pkk-primary-dark);
+    border: 1.5px solid var(--pkk-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.05rem;
+}
+
+/* -------------------------------------------------------------------------
+   3. AREA UTAMA & TOPBAR (MAIN CONTENT & HEADER)
+   ------------------------------------------------------------------------- */
+.app-main {
+    flex: 1;
+    margin-left: var(--pkk-sidebar-width);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--pkk-bg);
+    transition: margin 0.3s ease;
+}
+
+.app-topbar {
+    height: 72px;
+    background: #ffffff;
+    border-bottom: 1.5px solid var(--pkk-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.85rem;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.topbar-toggle-btn {
+    background: #f1f5f9;
+    border: 1px solid var(--pkk-border);
+    font-size: 1.2rem;
+    color: #1e293b;
+    cursor: pointer;
+    display: none;
+    padding: 0.4rem 0.65rem;
+    border-radius: 8px;
+}
+
+.topbar-toggle-btn:hover {
+    background: #e2e8f0;
+}
+
+.page-title-wrap h1 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--pkk-text-main);
+    letter-spacing: -0.02em;
+}
+
+.page-title-wrap small {
+    font-size: 0.82rem;
+    color: var(--pkk-text-muted);
+    font-weight: 500;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.content-body {
+    padding: 1.85rem;
+    flex: 1;
+}
+
+/* -------------------------------------------------------------------------
+   4. KARTU KOMPONEN DENGAN KONTRAS TINGGI (CARD PKK)
+   ------------------------------------------------------------------------- */
+.card-pkk {
+    background: var(--pkk-card-bg);
+    border: 1.5px solid var(--pkk-border);
+    border-radius: var(--pkk-radius);
+    box-shadow: var(--pkk-shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.card-pkk-header {
+    padding: 1.15rem 1.5rem;
+    border-bottom: 1.5px solid var(--pkk-border);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-pkk-header h5, .card-pkk-header h6 {
+    margin: 0;
+    font-weight: 800;
+    color: var(--pkk-text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    letter-spacing: -0.01em;
+}
+
+.card-pkk-body {
+    padding: 1.5rem;
+}
+
+/* Kartu Statistik Dashboard (Stat Cards) */
+.stat-card {
+    position: relative;
+    border-radius: var(--pkk-radius);
+    padding: 1.35rem 1.45rem;
+    background: #ffffff;
+    border: 1.5px solid var(--pkk-border);
+    box-shadow: var(--pkk-shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--pkk-shadow-md);
+    border-color: #94a3b8;
+}
+
+.stat-card .stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+/* Variasi Warna Kartu Statistik Berkontras */
+.stat-card.stat-green .stat-icon {
+    background-color: var(--pkk-primary-subtle);
+    color: var(--pkk-primary-dark);
+}
+
+.stat-card.stat-blue .stat-icon {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.stat-card.stat-amber .stat-icon {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.stat-card.stat-rose .stat-icon {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.stat-card .stat-title {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--pkk-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+}
+
+.stat-card .stat-value {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--pkk-text-main);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.stat-card .stat-sub {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+}
+
+/* -------------------------------------------------------------------------
+   5. KARTU SALDO HERO (DARK FOREST GRADIENT)
+   Digunakan di dashboard pengguna dan profil anggota untuk menonjolkan saldo
+   ------------------------------------------------------------------------- */
+.saldo-hero-card {
+    background: linear-gradient(135deg, #072e18 0%, #0b4626 50%, #041c0e 100%);
+    color: #ffffff;
+    border-radius: 18px;
+    padding: 2.25rem 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 14px 28px -4px rgba(7, 46, 24, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.saldo-hero-card::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+}
+
+.saldo-hero-card .hero-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: #a7f3d0;
+}
+
+.saldo-hero-card .hero-nominal {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin: 0.5rem 0 1.25rem;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+}
+
+.saldo-hero-stat {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 0.9rem 1.15rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* -------------------------------------------------------------------------
+   6. TOMBOL (BUTTONS) BERKONTRAS TINGGI
+   ------------------------------------------------------------------------- */
+.btn-pkk-primary {
+    background: linear-gradient(135deg, var(--pkk-primary-dark), var(--pkk-primary));
+    color: #ffffff;
+    border: none;
+    font-weight: 700;
+    padding: 0.65rem 1.35rem;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(7, 46, 24, 0.25);
+}
+
+.btn-pkk-primary:hover, .btn-pkk-primary:focus {
+    background: linear-gradient(135deg, #041c0e, var(--pkk-primary-dark));
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(7, 46, 24, 0.35);
+}
+
+.btn-pkk-outline {
+    background-color: transparent;
+    border: 1.5px solid var(--pkk-primary);
+    color: var(--pkk-primary-dark);
+    font-weight: 700;
+    padding: 0.6rem 1.25rem;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-pkk-outline:hover {
+    background-color: var(--pkk-primary-subtle);
+    color: var(--pkk-primary-dark);
+    border-color: var(--pkk-primary-dark);
+}
+
+/* -------------------------------------------------------------------------
+   7. BADGE (LENCANA STATUS & ROLE)
+   ------------------------------------------------------------------------- */
+.badge-role-admin {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+}
+
+.badge-role-bendahara {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+}
+
+.badge-role-pengguna {
+    background-color: var(--pkk-primary-subtle);
+    color: var(--pkk-primary-dark);
+    border: 1px solid #a7f3d0;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+}
+
+.badge-status-aktif, .badge-trx-setoran, .badge-status-berhasil, .badge-status-disetujui, .badge-status-selesai {
+    background-color: var(--pkk-primary-subtle);
+    color: var(--pkk-primary-dark);
+    border: 1px solid #a7f3d0;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.32rem 0.65rem;
+    border-radius: 6px;
+}
+
+.badge-status-nonaktif, .badge-trx-penarikan, .badge-status-dibatalkan, .badge-status-ditolak {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.32rem 0.65rem;
+    border-radius: 6px;
+}
+
+.badge-status-menunggu {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.32rem 0.65rem;
+    border-radius: 6px;
+}
+
+/* -------------------------------------------------------------------------
+   8. TABEL DATA (DATA TABLES)
+   ------------------------------------------------------------------------- */
+.table-pkk {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-pkk thead th {
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.95rem 1.1rem;
+    border-bottom: 1.5px solid var(--pkk-border);
+    white-space: nowrap;
+}
+
+.table-pkk tbody td {
+    padding: 0.95rem 1.1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.92rem;
+    color: var(--pkk-text-main);
+}
+
+.table-pkk tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* -------------------------------------------------------------------------
+   9. NAVIGASI MOBILE BAWAH (BOTTOM NAVIGATION)
+   Memudahkan penggunaan dengan jempol saat diakses dari HP / smartphone
+   ------------------------------------------------------------------------- */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1.5px solid var(--pkk-border);
+    z-index: 1050;
+    box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mobile-bottom-nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.mobile-bottom-nav li {
+    flex: 1;
+}
+
+.mobile-bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    gap: 3px;
+}
+
+.mobile-bottom-nav a i {
+    font-size: 1.25rem;
+}
+
+.mobile-bottom-nav a.active {
+    color: var(--pkk-primary-dark);
+}
+
+/* -------------------------------------------------------------------------
+   10. CETAK DOKUMEN / KWITANSI RESMI (@media print)
+   Menghilangkan sidebar, topbar, dan elemen web saat tombol cetak ditekan
+   ------------------------------------------------------------------------- */
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    .no-print, .app-sidebar, .app-topbar, .mobile-bottom-nav, footer, .btn-group {
+        display: none !important;
+    }
+    .app-main {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .content-body {
+        padding: 0 !important;
+    }
+}
+
+/* -------------------------------------------------------------------------
+   11. ADAPTASI RESPONSIF LAYAR KECIL (TABLET & SMARTPHONE)
+   ------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+    .app-sidebar {
+        transform: translateX(-100%);
+    }
+    .app-sidebar.show {
+        transform: translateX(0);
+    }
+    .app-main {
+        margin-left: 0;
+        padding-bottom: 70px;
+    }
+    .topbar-toggle-btn {
+        display: block;
+    }
+    .mobile-bottom-nav {
+        display: block;
+    }
+}
